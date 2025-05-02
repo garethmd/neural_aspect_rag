@@ -7,52 +7,57 @@ from timescale_vector import client
 # Initialize VectorStore
 vec = VectorStore()
 
-# --------------------------------------------------------------
-# DeepAR question
-# --------------------------------------------------------------
 
-relevant_question = "What is DeepAR?"
+def main(query: str):
+    # --------------------------------------------------------------
+    # DeepAR question
+    # --------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Semantic search
-# --------------------------------------------------------------
+    relevant_question = query
 
-semantic_results = vec.semantic_search(relevant_question, limit=3)
-print(semantic_results)
-# --------------------------------------------------------------
-# Keyword search
-# --------------------------------------------------------------
+    # --------------------------------------------------------------
+    # Semantic search
+    # --------------------------------------------------------------
 
-keyword_results = vec.keyword_search(relevant_question, limit=3)
-print(keyword_results)
+    semantic_results = vec.semantic_search(relevant_question, limit=3)
+    print(semantic_results)
+    # --------------------------------------------------------------
+    # Keyword search
+    # --------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Hybrid search
-# --------------------------------------------------------------
+    keyword_results = vec.keyword_search(relevant_question, limit=3)
+    print(keyword_results)
 
-hybrid_results = vec.hybrid_search(relevant_question, keyword_k=3)
-print(hybrid_results)
+    # --------------------------------------------------------------
+    # Hybrid search
+    # --------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Reranking
-# --------------------------------------------------------------
+    hybrid_results = vec.hybrid_search(relevant_question, keyword_k=3)
+    print(hybrid_results)
 
-reranked_results = vec.hybrid_search(
-    relevant_question, keyword_k=5, semantic_k=5, rerank=True
-)
-print(reranked_results)
+    # --------------------------------------------------------------
+    # Reranking
+    # --------------------------------------------------------------
 
-# --------------------------------------------------------------
-# Search
-# --------------------------------------------------------------
+    reranked_results = vec.hybrid_search(
+        relevant_question, keyword_k=5, semantic_k=5, rerank=True
+    )
+    print(reranked_results)
+
+    # --------------------------------------------------------------
+    # Search
+    # --------------------------------------------------------------
+
+    response = Synthesizer.generate_response(
+        question=relevant_question, context=reranked_results
+    )
+
+    return {
+        "answer": response.answer,
+        "thought_process": response.thought_process,
+        "enough_context": response.enough_context,
+    }
 
 
-response = Synthesizer.generate_response(
-    question=relevant_question, context=reranked_results
-)
-
-print(f"\n{response.answer}")
-print("\nThought process:")
-for thought in response.thought_process:
-    print(f"- {thought}")
-print(f"\nContext: {response.enough_context}")
+if __name__ == "__main__":
+    main()

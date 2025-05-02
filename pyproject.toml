@@ -29,6 +29,8 @@ llama-index-vector-stores-postgres = "^0.5.1"
 sqlalchemy = "^2.0.40"
 more-itertools = "^10.7.0"
 cohere = "^5.15.0"
+fastapi = "^0.115.12"
+uvicorn = "^0.34.2"
 
 
 [build-system]
